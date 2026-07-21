@@ -3,16 +3,17 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase-browser";
 import { formatTanggalWaktu } from "@/lib/format-waktu";
-import { ClipboardList, ImageOff, X } from "lucide-react";
+import { Camera, ImageOff, X, MapPin } from "lucide-react";
 
-type LaporanHarian = {
+type AbsensiFoto = {
   id: string;
-  jenis: string;
-  deskripsi: string | null;
-  foto_url: string | null;
-  created_at: string;
-  petugas_id: string | null;
-  tahap: "sebelum" | "sesudah" | null;
+  petugas_id: string;
+  status: "masuk" | "keluar";
+  latitude: number;
+  longitude: number;
+  foto_selfie_url: string;
+  dalam_radius: boolean;
+  waktu: string;
   petugas: { nama: string; jenis_petugas: string | null } | null;
 };
 
@@ -23,31 +24,9 @@ function todayWIB(): string {
   return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta" }).format(now);
 }
 
-function TahapBadge({ tahap }: { tahap: "sebelum" | "sesudah" | null }) {
-  if (tahap === "sebelum") {
-    return (
-      <span className="shrink-0 text-[10px] font-data font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-signal/15 text-signal border border-signal/30">
-        Sebelum
-      </span>
-    );
-  }
-  if (tahap === "sesudah") {
-    return (
-      <span className="shrink-0 text-[10px] font-data font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-melati/15 text-melati border border-melati/30">
-        Sesudah
-      </span>
-    );
-  }
-  return (
-    <span className="shrink-0 text-[10px] font-data font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full bg-muted/10 text-muted border border-line">
-      -
-    </span>
-  );
-}
-
-export default function LaporanHarianPage() {
+export default function AbsensiPetugasPage() {
   const supabase = createClient();
-  const [laporan, setLaporan] = useState<LaporanHarian[]>([]);
+  const [absensi, setAbsensi] = useState<AbsensiFoto[]>([]);
   const [petugasList, setPetugasList] = useState<Petugas[]>([]);
   const [filterPetugas, setFilterPetugas] = useState("");
   const [filterTanggal, setFilterTanggal] = useState("");
@@ -68,25 +47,23 @@ export default function LaporanHarianPage() {
 
   async function load() {
     setLoading(true);
-    // Laporan harian = laporan yang DIBUAT OLEH petugas (petugas_id terisi),
-    // beda dengan pengaduan warga yang punya pelapor_id. Ini foto kegiatan
-    // kerja lapangan, bukan komplain masuk.
     let query = supabase
-      .from("laporan")
-      .select("id, jenis, deskripsi, foto_url, created_at, petugas_id, tahap, petugas:petugas_id(nama, jenis_petugas)")
-      .not("petugas_id", "is", null)
-      .order("created_at", { ascending: false });
+      .from("absensi")
+      .select(
+        "id, petugas_id, status, latitude, longitude, foto_selfie_url, dalam_radius, waktu, petugas:petugas_id(nama, jenis_petugas)"
+      )
+      .order("waktu", { ascending: false });
 
     if (filterPetugas) query = query.eq("petugas_id", filterPetugas);
 
     if (filterTanggal) {
       const start = new Date(`${filterTanggal}T00:00:00+07:00`).toISOString();
       const end = new Date(`${filterTanggal}T23:59:59+07:00`).toISOString();
-      query = query.gte("created_at", start).lte("created_at", end);
+      query = query.gte("waktu", start).lte("waktu", end);
     }
 
     const { data } = await query;
-    setLaporan((data as unknown as LaporanHarian[]) ?? []);
+    setAbsensi((data as unknown as AbsensiFoto[]) ?? []);
     setLoading(false);
   }
 
@@ -98,14 +75,14 @@ export default function LaporanHarianPage() {
   return (
     <div>
       <div className="flex items-center gap-2 mb-1">
-        <ClipboardList size={14} className="text-melati" />
+        <Camera size={14} className="text-signal" />
         <p className="font-data text-xs text-muted uppercase tracking-widest">
-          02 · Laporan Harian
+          03 · Absensi Petugas
         </p>
       </div>
-      <h2 className="font-display text-2xl font-semibold mb-1">Laporan Harian Petugas</h2>
+      <h2 className="font-display text-2xl font-semibold mb-1">Foto Absensi Kehadiran</h2>
       <p className="text-muted text-sm mb-6">
-        Dokumentasi foto kegiatan kerja lapangan petugas — filter berdasarkan nama & tanggal.
+        Dokumentasi foto selfie absen masuk & keluar petugas — filter berdasarkan nama & tanggal.
       </p>
 
       <div className="flex flex-col sm:flex-row gap-2 mb-6">
@@ -148,23 +125,23 @@ export default function LaporanHarianPage() {
 
       {loading ? (
         <p className="text-muted text-sm">Memuat…</p>
-      ) : laporan.length === 0 ? (
+      ) : absensi.length === 0 ? (
         <div className="rounded-xl border border-line bg-panel p-10 text-center text-muted text-sm">
-          Tidak ada laporan harian untuk filter ini.
+          Tidak ada data absensi untuk filter ini.
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {laporan.map((l) => (
-            <div key={l.id} className="bg-panel border border-line rounded-xl overflow-hidden">
+          {absensi.map((a) => (
+            <div key={a.id} className="bg-panel border border-line rounded-xl overflow-hidden">
               <button
-                onClick={() => l.foto_url && setFotoDilihat(l.foto_url)}
+                onClick={() => a.foto_selfie_url && setFotoDilihat(a.foto_selfie_url)}
                 className="block w-full aspect-video bg-base"
               >
-                {l.foto_url ? (
+                {a.foto_selfie_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={l.foto_url}
-                    alt={l.jenis}
+                    src={a.foto_selfie_url}
+                    alt={`Absen ${a.status}`}
                     className="w-full h-full object-cover hover:opacity-90 transition"
                   />
                 ) : (
@@ -175,20 +152,32 @@ export default function LaporanHarianPage() {
               </button>
               <div className="p-4">
                 <div className="flex items-center justify-between gap-2">
-                  <p className="font-medium text-sm">{l.jenis}</p>
-                  <TahapBadge tahap={l.tahap} />
+                  <p className="font-medium text-sm">
+                    {a.petugas?.nama ?? "Petugas"}
+                    {a.petugas?.jenis_petugas ? ` · ${a.petugas.jenis_petugas}` : ""}
+                  </p>
+                  <span
+                    className={`shrink-0 text-[10px] font-data font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full border ${
+                      a.status === "masuk"
+                        ? "bg-signal/15 text-signal border-signal/30"
+                        : "bg-melati/15 text-melati border-melati/30"
+                    }`}
+                  >
+                    {a.status}
+                  </span>
                 </div>
-                {l.deskripsi && (
-                  <p className="text-xs text-muted mt-1 break-words line-clamp-2">{l.deskripsi}</p>
-                )}
                 <div className="flex items-center justify-between mt-3">
-                  <span className="text-xs font-data text-signal">
-                    {l.petugas?.nama ?? "Petugas"}
-                    {l.petugas?.jenis_petugas ? ` · ${l.petugas.jenis_petugas}` : ""}
+                  <span
+                    className={`flex items-center gap-1 text-[10px] font-data ${
+                      a.dalam_radius ? "text-melati" : "text-danger"
+                    }`}
+                  >
+                    <MapPin size={11} />
+                    {a.dalam_radius ? "Dalam radius zona" : "Luar radius zona"}
                   </span>
                 </div>
                 <p className="text-[10px] text-muted mt-1 font-data">
-                  {formatTanggalWaktu(l.created_at)}
+                  {formatTanggalWaktu(a.waktu)}
                 </p>
               </div>
             </div>
@@ -205,7 +194,7 @@ export default function LaporanHarianPage() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={fotoDilihat}
-            alt="Foto laporan"
+            alt="Foto absensi"
             className="max-w-full max-h-full rounded-lg object-contain"
           />
           <button

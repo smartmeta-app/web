@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase-browser";
 import {
   Radar,
   ClipboardList,
+  Camera,
   Users,
   BarChart3,
   Megaphone,
@@ -24,6 +25,7 @@ const SECTIONS = [
     label: "Operasional",
     items: [
       { href: "/laporan", label: "Laporan Harian", icon: ClipboardList, warna: "melati" as const },
+      { href: "/absensi", label: "Absensi Petugas", icon: Camera, warna: "signal" as const },
     ],
   },
   {
