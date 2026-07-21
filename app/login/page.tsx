@@ -29,14 +29,22 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-base px-4">
       <div className="w-full max-w-sm">
-        <div className="flex items-center gap-2 mb-8">
+        <div className="flex justify-center mb-6">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-smart-meta.jpg"
+            alt="SMART META"
+            className="w-28 h-28 rounded-2xl object-cover border border-line shadow-lg"
+          />
+        </div>
+        <div className="flex items-center justify-center gap-2 mb-8">
           <span className="w-2.5 h-2.5 rounded-full bg-signal pulse-dot text-signal" />
           <span className="font-data text-xs tracking-widest text-muted uppercase">
             Live Ops · Teladan Barat
           </span>
         </div>
-        <h1 className="font-display text-3xl font-semibold mb-1">SMART META</h1>
-        <p className="text-muted text-sm mb-8">
+        <h1 className="font-display text-3xl font-semibold mb-1 text-center">SMART META</h1>
+        <p className="text-muted text-sm mb-8 text-center">
           Masuk ke pusat kendali pemantauan petugas kebersihan.
         </p>
 

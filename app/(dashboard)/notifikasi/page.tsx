@@ -5,7 +5,6 @@ import { createClient } from "@/lib/supabase-browser";
 import { formatTanggalWaktu } from "@/lib/format-waktu";
 import { Megaphone } from "lucide-react";
 
-type Zona = { id: string; nama_zona: string };
 type Notif = {
   id: string;
   judul: string;
@@ -19,14 +18,10 @@ export default function NotifikasiPage() {
   const [judul, setJudul] = useState("");
   const [isi, setIsi] = useState("");
   const [targetRole, setTargetRole] = useState<string>("");
-  const [targetZona, setTargetZona] = useState<string>("");
-  const [zonas, setZonas] = useState<Zona[]>([]);
   const [riwayat, setRiwayat] = useState<Notif[]>([]);
   const [terkirim, setTerkirim] = useState(false);
 
   async function load() {
-    const { data: z } = await supabase.from("zonas").select("id, nama_zona");
-    if (z) setZonas(z as Zona[]);
     const { data: n } = await supabase
       .from("notifikasi")
       .select("id, judul, isi, target_role, created_at")
@@ -46,7 +41,6 @@ export default function NotifikasiPage() {
       judul,
       isi,
       target_role: targetRole || null,
-      target_zona_id: targetZona || null,
       dikirim_oleh: userData.user?.id,
     });
     // Catatan: pengiriman push notification sesungguhnya (OneSignal) dipicu dari
@@ -69,7 +63,7 @@ export default function NotifikasiPage() {
         </div>
         <h2 className="font-display text-2xl font-semibold mb-1">Kirim Notifikasi</h2>
         <p className="text-muted text-sm mb-5">
-          Notifikasi dikirim ke semua, berdasarkan peran, atau zona tertentu.
+          Notifikasi dikirim ke semua pengguna atau berdasarkan peran tertentu.
         </p>
 
         <div className="space-y-3">
@@ -86,29 +80,15 @@ export default function NotifikasiPage() {
             rows={4}
             className="w-full bg-panel border border-line rounded-md px-3 py-2 text-sm"
           />
-          <div className="flex flex-col sm:flex-row gap-2">
-            <select
-              value={targetRole}
-              onChange={(e) => setTargetRole(e.target.value)}
-              className="flex-1 bg-panel border border-line rounded-md px-3 py-2 text-sm"
-            >
-              <option value="">Semua peran</option>
-              <option value="petugas">Petugas</option>
-              <option value="warga">Warga</option>
-            </select>
-            <select
-              value={targetZona}
-              onChange={(e) => setTargetZona(e.target.value)}
-              className="flex-1 bg-panel border border-line rounded-md px-3 py-2 text-sm"
-            >
-              <option value="">Semua zona</option>
-              {zonas.map((z) => (
-                <option key={z.id} value={z.id}>
-                  {z.nama_zona}
-                </option>
-              ))}
-            </select>
-          </div>
+          <select
+            value={targetRole}
+            onChange={(e) => setTargetRole(e.target.value)}
+            className="w-full bg-panel border border-line rounded-md px-3 py-2 text-sm"
+          >
+            <option value="">Semua peran</option>
+            <option value="petugas">Petugas</option>
+            <option value="warga">Warga</option>
+          </select>
           <button
             onClick={kirim}
             className="bg-signal text-base font-medium rounded-md px-4 py-2 text-sm w-full"

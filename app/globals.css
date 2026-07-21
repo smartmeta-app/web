@@ -6,8 +6,8 @@
 @import "leaflet/dist/leaflet.css";
 
 body {
-  background: #0f1e1b;
-  color: #efeae0;
+  background: #0a1830;
+  color: #eef4fa;
   font-family: "Inter", sans-serif;
 }
 
@@ -28,6 +28,6 @@ body {
 }
 
 ::selection {
-  background: #e8a33d;
-  color: #0f1e1b;
+  background: #2f8af0;
+  color: #eef4fa;
 }

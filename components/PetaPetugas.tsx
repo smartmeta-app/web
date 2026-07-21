@@ -53,7 +53,7 @@ export default function PetaPetugas() {
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       {lokasi.map((l) => {
-        const warna = l.profiles?.jenis_petugas === "bestari" ? "#6E9BC7" : "#7FB88F";
+        const warna = l.profiles?.jenis_petugas === "bestari" ? "#5AA9E6" : "#22B573";
         return (
           <CircleMarker
             key={l.petugas_id}

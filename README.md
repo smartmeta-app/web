@@ -12,18 +12,7 @@ cp .env.local.example .env.local
 npm run dev
 ```
 
-## 2. Tambahan kolom di tabel `zonas`
-
-Halaman "Zona & Radius Absensi" butuh kolom yang belum ada di schema awal.
-Jalankan di Supabase SQL editor:
-
-```sql
-alter table zonas add column latitude double precision;
-alter table zonas add column longitude double precision;
-alter table zonas add column radius_meter integer default 150;
-```
-
-## 3. Membuat akun admin pertama
+## 2. Membuat akun admin pertama
 
 Karena registrasi akun admin sengaja tidak dibuka lewat form publik (demi keamanan),
 buat manual:

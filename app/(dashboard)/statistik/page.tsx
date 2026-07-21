@@ -11,8 +11,8 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import * as XLSX from "xlsx";
-import { BarChart3, FileDown } from "lucide-react";
+import { exportExcelDenganFoto } from "@/lib/export-excel";
+import { BarChart3, FileDown, Loader2 } from "lucide-react";
 
 export default function StatistikPage() {
   const supabase = createClient();
@@ -50,11 +50,24 @@ export default function StatistikPage() {
     load();
   }, []);
 
-  function exportExcel(data: any[], namaFile: string) {
-    const ws = XLSX.utils.json_to_sheet(data);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Data");
-    XLSX.writeFile(wb, `${namaFile}.xlsx`);
+  const [mengekspor, setMengekspor] = useState<"laporan" | "absensi" | null>(null);
+  const [progresEkspor, setProgresEkspor] = useState<string>("");
+  const [errorEkspor, setErrorEkspor] = useState<string | null>(null);
+
+  async function handleExport(data: any[], namaFile: string, jenis: "laporan" | "absensi") {
+    setErrorEkspor(null);
+    setMengekspor(jenis);
+    setProgresEkspor("Menyiapkan…");
+    try {
+      await exportExcelDenganFoto(data, namaFile, (selesai, total) => {
+        setProgresEkspor(`Mengambil foto ${selesai}/${total}…`);
+      });
+    } catch (err: any) {
+      setErrorEkspor(err?.message ?? "Export gagal, coba lagi.");
+    } finally {
+      setMengekspor(null);
+      setProgresEkspor("");
+    }
   }
 
   return (
@@ -67,7 +80,8 @@ export default function StatistikPage() {
       </div>
       <h2 className="font-display text-2xl font-semibold mb-1">Statistik & Export</h2>
       <p className="text-muted text-sm mb-6">
-        Ringkasan kinerja petugas dan tren laporan. Export tersedia dalam format Excel.
+        Ringkasan kinerja petugas dan tren laporan. Export tersedia dalam format Excel — foto
+        (bukti laporan/absensi) ikut tertanam langsung di file, tidak lagi berupa link.
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
@@ -75,11 +89,11 @@ export default function StatistikPage() {
           <p className="text-sm font-medium mb-4">Laporan per Status</p>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={laporanPerStatus}>
-              <CartesianGrid stroke="#274038" vertical={false} />
-              <XAxis dataKey="status" stroke="#9FB3AC" fontSize={12} />
-              <YAxis stroke="#9FB3AC" fontSize={12} allowDecimals={false} />
-              <Tooltip contentStyle={{ background: "#16302A", border: "1px solid #274038" }} />
-              <Bar dataKey="jumlah" fill="#E8A33D" radius={[4, 4, 0, 0]} />
+              <CartesianGrid stroke="#1E3A5F" vertical={false} />
+              <XAxis dataKey="status" stroke="#93AAC4" fontSize={12} />
+              <YAxis stroke="#93AAC4" fontSize={12} allowDecimals={false} />
+              <Tooltip contentStyle={{ background: "#0F2340", border: "1px solid #1E3A5F" }} />
+              <Bar dataKey="jumlah" fill="#2F8AF0" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -88,31 +102,43 @@ export default function StatistikPage() {
           <p className="text-sm font-medium mb-4">Laporan Selesai per Petugas</p>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={kinerja}>
-              <CartesianGrid stroke="#274038" vertical={false} />
-              <XAxis dataKey="nama" stroke="#9FB3AC" fontSize={11} />
-              <YAxis stroke="#9FB3AC" fontSize={12} allowDecimals={false} />
-              <Tooltip contentStyle={{ background: "#16302A", border: "1px solid #274038" }} />
-              <Bar dataKey="selesai" fill="#7FB88F" radius={[4, 4, 0, 0]} />
+              <CartesianGrid stroke="#1E3A5F" vertical={false} />
+              <XAxis dataKey="nama" stroke="#93AAC4" fontSize={11} />
+              <YAxis stroke="#93AAC4" fontSize={12} allowDecimals={false} />
+              <Tooltip contentStyle={{ background: "#0F2340", border: "1px solid #1E3A5F" }} />
+              <Bar dataKey="selesai" fill="#22B573" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <button
-          onClick={() => exportExcel(rawLaporan, "laporan-warga")}
-          className="flex items-center gap-1.5 text-xs border border-line rounded-md px-3 py-2 hover:border-signal transition"
+          onClick={() => handleExport(rawLaporan, "laporan-warga", "laporan")}
+          disabled={mengekspor !== null}
+          className="flex items-center gap-1.5 text-xs border border-line rounded-md px-3 py-2 hover:border-signal transition disabled:opacity-50"
         >
-          <FileDown size={13} />
+          {mengekspor === "laporan" ? (
+            <Loader2 size={13} className="animate-spin" />
+          ) : (
+            <FileDown size={13} />
+          )}
           Export Laporan (.xlsx)
         </button>
         <button
-          onClick={() => exportExcel(rawAbsensi, "absensi-petugas")}
-          className="flex items-center gap-1.5 text-xs border border-line rounded-md px-3 py-2 hover:border-signal transition"
+          onClick={() => handleExport(rawAbsensi, "absensi-petugas", "absensi")}
+          disabled={mengekspor !== null}
+          className="flex items-center gap-1.5 text-xs border border-line rounded-md px-3 py-2 hover:border-signal transition disabled:opacity-50"
         >
-          <FileDown size={13} />
+          {mengekspor === "absensi" ? (
+            <Loader2 size={13} className="animate-spin" />
+          ) : (
+            <FileDown size={13} />
+          )}
           Export Absensi (.xlsx)
         </button>
+        {mengekspor && <span className="text-xs text-muted">{progresEkspor}</span>}
+        {errorEkspor && <span className="text-xs text-danger">{errorEkspor}</span>}
       </div>
     </div>
   );

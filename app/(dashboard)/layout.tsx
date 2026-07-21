@@ -23,6 +23,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           >
             <Menu size={20} />
           </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-smart-meta.jpg"
+            alt="SMART META"
+            className="w-7 h-7 rounded-md object-cover border border-line"
+          />
           <span className="font-display font-semibold text-sm">SMART META</span>
         </div>
 

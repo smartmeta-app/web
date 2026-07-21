@@ -6,7 +6,6 @@ import { createClient } from "@/lib/supabase-browser";
 import {
   Radar,
   ClipboardList,
-  MapPinned,
   Users,
   BarChart3,
   Megaphone,
@@ -25,7 +24,6 @@ const SECTIONS = [
     label: "Operasional",
     items: [
       { href: "/laporan", label: "Laporan Harian", icon: ClipboardList },
-      { href: "/zona", label: "Zona & Jam Kerja", icon: MapPinned },
     ],
   },
   {
@@ -80,20 +78,28 @@ export default function Sidebar({
           <div
             className="absolute inset-0 opacity-[0.07]"
             style={{
-              backgroundImage: "radial-gradient(circle, #E8A33D 1px, transparent 1px)",
+              backgroundImage: "radial-gradient(circle, #2F8AF0 1px, transparent 1px)",
               backgroundSize: "14px 14px",
             }}
           />
           <div className="relative flex items-start justify-between">
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="w-2 h-2 rounded-full bg-signal pulse-dot text-signal" />
-                <span className="font-data text-[10px] tracking-widest text-muted uppercase">
-                  live · ops
-                </span>
+            <div className="flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/logo-smart-meta.jpg"
+                alt="SMART META"
+                className="w-10 h-10 rounded-lg object-cover border border-line shrink-0"
+              />
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="w-2 h-2 rounded-full bg-signal pulse-dot text-signal" />
+                  <span className="font-data text-[10px] tracking-widest text-muted uppercase">
+                    live · ops
+                  </span>
+                </div>
+                <h1 className="font-display font-semibold text-lg leading-tight">SMART META</h1>
+                <p className="text-xs text-muted mt-0.5">Kel. Teladan Barat</p>
               </div>
-              <h1 className="font-display font-semibold text-lg leading-tight">SMART META</h1>
-              <p className="text-xs text-muted mt-0.5">Kel. Teladan Barat</p>
             </div>
             <button
               onClick={onClose}
