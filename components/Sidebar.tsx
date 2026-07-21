@@ -5,9 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
 import {
   Radar,
-  History,
-  MessageSquareWarning,
-  Recycle,
+  ClipboardList,
   MapPinned,
   Users,
   BarChart3,
@@ -21,14 +19,12 @@ const SECTIONS = [
     label: "Pemantauan",
     items: [
       { href: "/", label: "Peta Realtime", icon: Radar },
-      { href: "/playback", label: "Playback Rute", icon: History },
     ],
   },
   {
     label: "Operasional",
     items: [
-      { href: "/laporan", label: "Laporan Warga", icon: MessageSquareWarning },
-      { href: "/bank-sampah", label: "Bank Sampah", icon: Recycle },
+      { href: "/laporan", label: "Laporan Harian", icon: ClipboardList },
       { href: "/zona", label: "Zona & Jam Kerja", icon: MapPinned },
     ],
   },
