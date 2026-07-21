@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase-browser";
+import { formatTanggalWaktu } from "@/lib/format-waktu";
+import { Megaphone } from "lucide-react";
 
 type Zona = { id: string; nama_zona: string };
 type Notif = {
@@ -59,9 +61,12 @@ export default function NotifikasiPage() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div>
-        <p className="font-data text-xs text-muted uppercase tracking-widest mb-1">
-          07 · Broadcast
-        </p>
+        <div className="flex items-center gap-2 mb-1">
+          <Megaphone size={14} className="text-signal" />
+          <p className="font-data text-xs text-muted uppercase tracking-widest">
+            07 · Broadcast
+          </p>
+        </div>
         <h2 className="font-display text-2xl font-semibold mb-1">Kirim Notifikasi</h2>
         <p className="text-muted text-sm mb-5">
           Notifikasi dikirim ke semua, berdasarkan peran, atau zona tertentu.
@@ -81,7 +86,7 @@ export default function NotifikasiPage() {
             rows={4}
             className="w-full bg-panel border border-line rounded-md px-3 py-2 text-sm"
           />
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <select
               value={targetRole}
               onChange={(e) => setTargetRole(e.target.value)}
@@ -119,10 +124,10 @@ export default function NotifikasiPage() {
         <div className="space-y-2 max-h-[480px] overflow-y-auto pr-1">
           {riwayat.map((n) => (
             <div key={n.id} className="bg-panel border border-line rounded-lg p-4">
-              <p className="text-sm font-medium">{n.judul}</p>
-              <p className="text-xs text-muted mt-1">{n.isi}</p>
+              <p className="text-sm font-medium break-words">{n.judul}</p>
+              <p className="text-xs text-muted mt-1 break-words">{n.isi}</p>
               <p className="text-[10px] font-data text-muted mt-2">
-                {n.target_role ?? "semua peran"} · {new Date(n.created_at).toLocaleString("id-ID")}
+                {n.target_role ?? "semua peran"} · {formatTanggalWaktu(n.created_at)}
               </p>
             </div>
           ))}

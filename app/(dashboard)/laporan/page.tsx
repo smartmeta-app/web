@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase-browser";
+import { formatTanggalWaktu } from "@/lib/format-waktu";
+import { MessageSquareWarning } from "lucide-react";
 
 type Laporan = {
   id: string;
@@ -61,15 +63,18 @@ export default function LaporanPage() {
 
   return (
     <div>
-      <p className="font-data text-xs text-muted uppercase tracking-widest mb-1">
-        02 · Aduan
-      </p>
+      <div className="flex items-center gap-2 mb-1">
+        <MessageSquareWarning size={14} className="text-signal" />
+        <p className="font-data text-xs text-muted uppercase tracking-widest">
+          02 · Aduan
+        </p>
+      </div>
       <h2 className="font-display text-2xl font-semibold mb-1">Laporan Warga</h2>
       <p className="text-muted text-sm mb-6">
         Tinjau, tugaskan ke petugas, dan perbarui status laporan masuk.
       </p>
 
-      <div className="flex gap-2 mb-5">
+      <div className="flex flex-wrap gap-2 mb-5">
         {["semua", "baru", "diproses", "selesai", "ditolak"].map((s) => (
           <button
             key={s}
@@ -86,12 +91,12 @@ export default function LaporanPage() {
       <div className="space-y-3">
         {filtered.map((l) => (
           <div key={l.id} className="bg-panel border border-line rounded-lg p-4">
-            <div className="flex justify-between items-start gap-4">
-              <div>
-                <p className="font-medium">{l.jenis}</p>
-                <p className="text-sm text-muted mt-0.5">{l.deskripsi}</p>
+            <div className="flex flex-col sm:flex-row justify-between items-start gap-2 sm:gap-4">
+              <div className="min-w-0">
+                <p className="font-medium break-words">{l.jenis}</p>
+                <p className="text-sm text-muted mt-0.5 break-words">{l.deskripsi}</p>
                 <p className="text-xs text-muted mt-2 font-data">
-                  {l.pelapor?.nama ?? "Warga"} · {new Date(l.created_at).toLocaleString("id-ID")}
+                  {l.pelapor?.nama ?? "Warga"} · {formatTanggalWaktu(l.created_at)}
                 </p>
               </div>
               <span
@@ -101,11 +106,11 @@ export default function LaporanPage() {
               </span>
             </div>
 
-            <div className="flex gap-2 mt-4">
+            <div className="flex flex-col sm:flex-row gap-2 mt-4">
               <select
                 value={l.petugas_id ?? ""}
                 onChange={(e) => assignPetugas(l.id, e.target.value)}
-                className="bg-base border border-line rounded-md text-xs px-2 py-1.5 text-ink"
+                className="bg-base border border-line rounded-md text-xs px-2 py-1.5 text-ink w-full sm:w-auto"
               >
                 <option value="">Tugaskan petugas…</option>
                 {petugasList.map((p) => (
@@ -118,7 +123,7 @@ export default function LaporanPage() {
               <select
                 value={l.status}
                 onChange={(e) => ubahStatus(l.id, e.target.value as Laporan["status"])}
-                className="bg-base border border-line rounded-md text-xs px-2 py-1.5 text-ink capitalize"
+                className="bg-base border border-line rounded-md text-xs px-2 py-1.5 text-ink capitalize w-full sm:w-auto"
               >
                 {["baru", "diproses", "selesai", "ditolak"].map((s) => (
                   <option key={s} value={s}>
@@ -136,3 +141,4 @@ export default function LaporanPage() {
     </div>
   );
 }
+

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase-browser";
+import { Users } from "lucide-react";
 
 type Profile = {
   id: string;
@@ -43,14 +44,17 @@ export default function AkunPage() {
 
   return (
     <div>
-      <p className="font-data text-xs text-muted uppercase tracking-widest mb-1">05 · Akun</p>
+      <div className="flex items-center gap-2 mb-1">
+        <Users size={14} className="text-signal" />
+        <p className="font-data text-xs text-muted uppercase tracking-widest">05 · Akun</p>
+      </div>
       <h2 className="font-display text-2xl font-semibold mb-1">Manajemen Akun</h2>
       <p className="text-muted text-sm mb-5">
         Kelola akun petugas dan warga. Penambahan akun baru dibuat lewat Supabase Auth
         (undang via email) lalu otomatis muncul di sini setelah profil terisi.
       </p>
 
-      <div className="flex gap-2 mb-5">
+      <div className="flex flex-wrap gap-2 mb-5">
         {(["petugas", "warga"] as const).map((t) => (
           <button
             key={t}
@@ -64,31 +68,31 @@ export default function AkunPage() {
         ))}
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-line">
-        <table className="w-full text-sm">
+      <div className="overflow-x-auto rounded-lg border border-line -mx-4 px-4 sm:mx-0 sm:px-0">
+        <table className="w-full text-sm min-w-[560px]">
           <thead>
             <tr className="bg-panel text-muted text-xs uppercase tracking-wide">
-              <th className="text-left px-4 py-3">Nama</th>
-              <th className="text-left px-4 py-3">No. HP</th>
+              <th className="text-left px-4 py-3 whitespace-nowrap">Nama</th>
+              <th className="text-left px-4 py-3 whitespace-nowrap">No. HP</th>
               {tab === "petugas" && (
                 <>
-                  <th className="text-left px-4 py-3">Jenis</th>
-                  <th className="text-left px-4 py-3">Jam Kerja</th>
+                  <th className="text-left px-4 py-3 whitespace-nowrap">Jenis</th>
+                  <th className="text-left px-4 py-3 whitespace-nowrap">Jam Kerja</th>
                 </>
               )}
-              <th className="text-left px-4 py-3">Status</th>
-              <th className="text-left px-4 py-3">Aksi</th>
+              <th className="text-left px-4 py-3 whitespace-nowrap">Status</th>
+              <th className="text-left px-4 py-3 whitespace-nowrap">Aksi</th>
             </tr>
           </thead>
           <tbody>
             {users.map((u) => (
               <tr key={u.id} className="border-t border-line">
-                <td className="px-4 py-3">{u.nama}</td>
-                <td className="px-4 py-3 font-data text-xs">{u.no_hp ?? "-"}</td>
+                <td className="px-4 py-3 whitespace-nowrap">{u.nama}</td>
+                <td className="px-4 py-3 font-data text-xs whitespace-nowrap">{u.no_hp ?? "-"}</td>
                 {tab === "petugas" && (
                   <>
-                    <td className="px-4 py-3 capitalize">{u.jenis_petugas ?? "-"}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 capitalize whitespace-nowrap">{u.jenis_petugas ?? "-"}</td>
+                    <td className="px-4 py-3 whitespace-nowrap">
                       <input
                         type="time"
                         defaultValue={u.jam_kerja_mulai ?? "07:00"}
@@ -108,12 +112,12 @@ export default function AkunPage() {
                     </td>
                   </>
                 )}
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 whitespace-nowrap">
                   <span className={u.is_active ? "text-melati" : "text-danger"}>
                     {u.is_active ? "Aktif" : "Nonaktif"}
                   </span>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-4 py-3 whitespace-nowrap">
                   <button
                     onClick={() => toggleAktif(u.id, u.is_active)}
                     className="text-xs border border-line rounded-md px-2.5 py-1 hover:border-signal transition"

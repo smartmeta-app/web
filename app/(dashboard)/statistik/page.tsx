@@ -12,6 +12,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import * as XLSX from "xlsx";
+import { BarChart3, FileDown } from "lucide-react";
 
 export default function StatistikPage() {
   const supabase = createClient();
@@ -58,16 +59,19 @@ export default function StatistikPage() {
 
   return (
     <div>
-      <p className="font-data text-xs text-muted uppercase tracking-widest mb-1">
-        06 · Statistik
-      </p>
+      <div className="flex items-center gap-2 mb-1">
+        <BarChart3 size={14} className="text-signal" />
+        <p className="font-data text-xs text-muted uppercase tracking-widest">
+          06 · Statistik
+        </p>
+      </div>
       <h2 className="font-display text-2xl font-semibold mb-1">Statistik & Export</h2>
       <p className="text-muted text-sm mb-6">
         Ringkasan kinerja petugas dan tren laporan. Export tersedia dalam format Excel.
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="bg-panel border border-line rounded-lg p-5">
+        <div className="bg-panel border border-line rounded-lg p-4 sm:p-5">
           <p className="text-sm font-medium mb-4">Laporan per Status</p>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={laporanPerStatus}>
@@ -80,7 +84,7 @@ export default function StatistikPage() {
           </ResponsiveContainer>
         </div>
 
-        <div className="bg-panel border border-line rounded-lg p-5">
+        <div className="bg-panel border border-line rounded-lg p-4 sm:p-5">
           <p className="text-sm font-medium mb-4">Laporan Selesai per Petugas</p>
           <ResponsiveContainer width="100%" height={240}>
             <BarChart data={kinerja}>
@@ -94,17 +98,19 @@ export default function StatistikPage() {
         </div>
       </div>
 
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         <button
           onClick={() => exportExcel(rawLaporan, "laporan-warga")}
-          className="text-xs border border-line rounded-md px-3 py-2 hover:border-signal transition"
+          className="flex items-center gap-1.5 text-xs border border-line rounded-md px-3 py-2 hover:border-signal transition"
         >
+          <FileDown size={13} />
           Export Laporan (.xlsx)
         </button>
         <button
           onClick={() => exportExcel(rawAbsensi, "absensi-petugas")}
-          className="text-xs border border-line rounded-md px-3 py-2 hover:border-signal transition"
+          className="flex items-center gap-1.5 text-xs border border-line rounded-md px-3 py-2 hover:border-signal transition"
         >
+          <FileDown size={13} />
           Export Absensi (.xlsx)
         </button>
       </div>

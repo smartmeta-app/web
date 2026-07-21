@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, CircleMarker } from "react-leaflet";
 import { createClient } from "@/lib/supabase-browser";
+import { formatWaktu } from "@/lib/format-waktu";
 
 type LokasiRow = {
   petugas_id: string;
@@ -67,7 +68,7 @@ export default function PetaPetugas() {
                 {l.profiles?.jenis_petugas ?? "-"}
                 <br />
                 <span className="text-xs text-gray-500">
-                  update: {new Date(l.updated_at).toLocaleTimeString("id-ID")}
+                  update: {formatWaktu(l.updated_at)}
                 </span>
               </div>
             </Popup>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase-browser";
+import { Recycle } from "lucide-react";
 
 type Jenis = { id: string; nama_sampah: string; poin_per_kg: number; aktif: boolean };
 type Transaksi = {
@@ -50,10 +51,15 @@ export default function BankSampahPage() {
 
   async function verifikasi(id: string) {
     const { data: userData } = await supabase.auth.getUser();
-    await supabase
-      .from("bank_sampah_transaksi")
-      .update({ diverifikasi_oleh: userData.user?.id })
-      .eq("id", id);
+    if (!userData.user) return;
+    const { error } = await supabase.rpc("verifikasi_transaksi_bank_sampah", {
+      p_transaksi_id: id,
+      p_admin_id: userData.user.id,
+    });
+    if (error) {
+      alert(`Gagal verifikasi: ${error.message}`);
+      return;
+    }
     load();
   }
 
@@ -62,32 +68,37 @@ export default function BankSampahPage() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div>
-        <p className="font-data text-xs text-muted uppercase tracking-widest mb-1">
-          03 · Bank Sampah
-        </p>
+        <div className="flex items-center gap-2 mb-1">
+          <Recycle size={14} className="text-signal" />
+          <p className="font-data text-xs text-muted uppercase tracking-widest">
+            03 · Bank Sampah
+          </p>
+        </div>
         <h2 className="font-display text-2xl font-semibold mb-1">Jenis & Harga Sampah</h2>
         <p className="text-muted text-sm mb-5">Atur poin per kilogram untuk tiap jenis sampah.</p>
 
-        <div className="flex gap-2 mb-4">
+        <div className="flex flex-col sm:flex-row gap-2 mb-4">
           <input
             placeholder="Nama sampah"
             value={namaBaru}
             onChange={(e) => setNamaBaru(e.target.value)}
             className="flex-1 bg-panel border border-line rounded-md px-3 py-2 text-sm"
           />
-          <input
-            placeholder="Poin/kg"
-            type="number"
-            value={poinBaru}
-            onChange={(e) => setPoinBaru(e.target.value)}
-            className="w-28 bg-panel border border-line rounded-md px-3 py-2 text-sm"
-          />
-          <button
-            onClick={tambahJenis}
-            className="bg-signal text-base font-medium rounded-md px-4 text-sm"
-          >
-            Tambah
-          </button>
+          <div className="flex gap-2">
+            <input
+              placeholder="Poin/kg"
+              type="number"
+              value={poinBaru}
+              onChange={(e) => setPoinBaru(e.target.value)}
+              className="w-28 bg-panel border border-line rounded-md px-3 py-2 text-sm"
+            />
+            <button
+              onClick={tambahJenis}
+              className="bg-signal text-base font-medium rounded-md px-4 text-sm shrink-0"
+            >
+              Tambah
+            </button>
+          </div>
         </div>
 
         <div className="space-y-2">
