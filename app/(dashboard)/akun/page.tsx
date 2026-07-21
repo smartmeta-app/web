@@ -45,7 +45,7 @@ export default function AkunPage() {
   return (
     <div>
       <div className="flex items-center gap-2 mb-1">
-        <Users size={14} className="text-signal" />
+        <Users size={14} className="text-melati" />
         <p className="font-data text-xs text-muted uppercase tracking-widest">05 · Akun</p>
       </div>
       <h2 className="font-display text-2xl font-semibold mb-1">Manajemen Akun</h2>

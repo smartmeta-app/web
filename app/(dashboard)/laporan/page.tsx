@@ -75,7 +75,7 @@ export default function LaporanHarianPage() {
   return (
     <div>
       <div className="flex items-center gap-2 mb-1">
-        <ClipboardList size={14} className="text-signal" />
+        <ClipboardList size={14} className="text-melati" />
         <p className="font-data text-xs text-muted uppercase tracking-widest">
           02 · Laporan Harian
         </p>

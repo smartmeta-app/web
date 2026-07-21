@@ -17,21 +17,21 @@ const SECTIONS = [
   {
     label: "Pemantauan",
     items: [
-      { href: "/", label: "Peta Realtime", icon: Radar },
+      { href: "/", label: "Peta Realtime", icon: Radar, warna: "signal" as const },
     ],
   },
   {
     label: "Operasional",
     items: [
-      { href: "/laporan", label: "Laporan Harian", icon: ClipboardList },
+      { href: "/laporan", label: "Laporan Harian", icon: ClipboardList, warna: "melati" as const },
     ],
   },
   {
     label: "Kelola",
     items: [
-      { href: "/akun", label: "Akun Pengguna", icon: Users },
-      { href: "/statistik", label: "Statistik", icon: BarChart3 },
-      { href: "/notifikasi", label: "Broadcast", icon: Megaphone },
+      { href: "/akun", label: "Akun Pengguna", icon: Users, warna: "melati" as const },
+      { href: "/statistik", label: "Statistik", icon: BarChart3, warna: "signal" as const },
+      { href: "/notifikasi", label: "Broadcast", icon: Megaphone, warna: "signal" as const },
     ],
   },
 ];
@@ -71,8 +71,8 @@ export default function Sidebar({
           ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
         `}
       >
-        {/* Aksen garis gradasi tipis di tepi kanan */}
-        <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-signal/40 via-line to-transparent" />
+        {/* Aksen garis gradasi tipis di tepi kanan — biru ke hijau, senada logo */}
+        <div className="absolute right-0 top-0 bottom-0 w-px bg-gradient-to-b from-signal/50 via-melati/40 to-transparent" />
 
         <div className="px-5 py-6 border-b border-line relative overflow-hidden">
           <div
@@ -97,7 +97,9 @@ export default function Sidebar({
                     live · ops
                   </span>
                 </div>
-                <h1 className="font-display font-semibold text-lg leading-tight">SMART META</h1>
+                <h1 className="font-display font-semibold text-lg leading-tight">
+                  <span className="text-signal">SMART</span> <span className="text-melati">META</span>
+                </h1>
                 <p className="text-xs text-muted mt-0.5">Kel. Teladan Barat</p>
               </div>
             </div>
@@ -120,6 +122,12 @@ export default function Sidebar({
               {section.items.map((item) => {
                 const active = pathname === item.href;
                 const ItemIcon = item.icon;
+                const warnaAktif = item.warna === "melati" ? "border-melati" : "border-signal";
+                const gradientAktif =
+                  item.warna === "melati"
+                    ? "bg-gradient-to-r from-melati/10 via-signal/5 to-transparent"
+                    : "bg-gradient-to-r from-signal/10 via-melati/5 to-transparent";
+                const iconAktif = item.warna === "melati" ? "text-melati" : "text-signal";
                 return (
                   <Link
                     key={item.href}
@@ -127,14 +135,14 @@ export default function Sidebar({
                     onClick={onClose}
                     className={`group flex items-center gap-3 px-5 py-2.5 text-sm transition border-l-2 relative ${
                       active
-                        ? "border-signal text-ink bg-gradient-to-r from-signal/10 to-transparent"
+                        ? `${warnaAktif} text-ink ${gradientAktif}`
                         : "border-transparent text-muted hover:text-ink hover:bg-base/20"
                     }`}
                   >
                     <ItemIcon
                       size={16}
                       strokeWidth={2}
-                      className={active ? "text-signal" : "text-muted group-hover:text-ink transition"}
+                      className={active ? iconAktif : "text-muted group-hover:text-ink transition"}
                     />
                     {item.label}
                   </Link>

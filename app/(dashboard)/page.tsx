@@ -52,7 +52,7 @@ export default function PetaPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
         <StatChip icon={Radar} label="Sedang Live" value={aktif} accent="text-signal" />
-        <StatChip icon={Users} label="Total Petugas" value={totalPetugas} accent="text-bestari" />
+        <StatChip icon={Users} label="Total Petugas" value={totalPetugas} accent="text-melati" />
         <StatChip icon={MessageSquareWarning} label="Laporan Baru" value={laporanBaru} accent="text-danger" />
       </div>
 

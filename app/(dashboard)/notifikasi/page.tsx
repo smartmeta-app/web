@@ -91,7 +91,7 @@ export default function NotifikasiPage() {
           </select>
           <button
             onClick={kirim}
-            className="bg-signal text-base font-medium rounded-md px-4 py-2 text-sm w-full"
+            className="bg-gradient-to-r from-signal to-melati text-white font-medium rounded-md px-4 py-2 text-sm w-full"
           >
             {terkirim ? "Terkirim ✓" : "Kirim Broadcast"}
           </button>

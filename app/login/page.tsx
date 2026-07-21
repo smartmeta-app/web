@@ -43,7 +43,9 @@ export default function LoginPage() {
             Live Ops · Teladan Barat
           </span>
         </div>
-        <h1 className="font-display text-3xl font-semibold mb-1 text-center">SMART META</h1>
+        <h1 className="font-display text-3xl font-semibold mb-1 text-center">
+          <span className="text-signal">SMART</span> <span className="text-melati">META</span>
+        </h1>
         <p className="text-muted text-sm mb-8 text-center">
           Masuk ke pusat kendali pemantauan petugas kebersihan.
         </p>
@@ -71,7 +73,7 @@ export default function LoginPage() {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-panel border border-line rounded-md px-3 py-2.5 text-ink outline-none focus:border-signal transition"
+              className="w-full bg-panel border border-line rounded-md px-3 py-2.5 text-ink outline-none focus:border-melati transition"
               placeholder="••••••••"
             />
           </div>
@@ -81,7 +83,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-signal text-base font-semibold rounded-md py-2.5 hover:brightness-110 transition disabled:opacity-50"
+            className="w-full bg-gradient-to-r from-signal to-melati text-white font-semibold rounded-md py-2.5 hover:brightness-110 transition disabled:opacity-50"
           >
             {loading ? "Memeriksa…" : "Masuk"}
           </button>
